@@ -1,0 +1,124 @@
+# Lädt die Website bei jeder Änderung automatisch per FTP in den Ordner jelk/ auf dem Webspace – mit Passwortschutz.
+# Benötigte GitHub-Secrets: FTP_SERVER, FTP_USERNAME, FTP_PASSWORD, HTPASSWD (Inhalt der Datei .htpasswd)
+name: Website hochladen
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency: upload
+
+env:
+  WEBSITE_URL: http://jelk.kiterunner.net
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. Kurz eine Hilfsdatei hochladen, die den Ordnerpfad auf dem Server verrät (für den Passwortschutz nötig)
+      - name: Hilfsdatei vorbereiten
+        run: |
+          mkdir -p hilfe
+          printf '<?php echo __DIR__;' > hilfe/pfad.php
+      - name: Hilfsdatei hochladen
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: jelk/
+          local-dir: ./hilfe/
+          state-name: .stand-hilfe.json
+
+      # 2. Pfad auslesen und Passwortschutz-Dateien erzeugen
+      - name: Passwortschutz vorbereiten
+        env:
+          HTPASSWD: ${{ secrets.HTPASSWD }}
+        run: |
+          PFAD=$(curl -fsS --retry 5 --retry-delay 15 --retry-all-errors -A "Mozilla/5.0" "$WEBSITE_URL/pfad.php")
+          case "$PFAD" in /*) ;; *) echo "Pfad konnte nicht gelesen werden: $PFAD"; exit 1 ;; esac
+          [ -n "$HTPASSWD" ] || { echo "Secret HTPASSWD fehlt"; exit 1; }
+          mkdir -p schutz
+          printf '%s\n' "$HTPASSWD" > schutz/.htpasswd
+          cat > schutz/.htaccess <<HTACCESS
+          # Passwortschutz – automatisch erzeugt von GitHub (siehe .github/workflows/upload.yml)
+          # Immer die JELK-Seite (index.html) als Startseite zeigen, nicht die alte index.htm im Ordner
+          DirectoryIndex index.html index.htm
+          AuthType Basic
+          AuthName "JELK Digital – noch nicht oeffentlich"
+          AuthUserFile $PFAD/.htpasswd
+          Require valid-user
+          <Files "pfad.php">
+            Require all granted
+          </Files>
+          <FilesMatch "^\.(htpasswd|stand-.*\.json)$">
+            Require all denied
+          </FilesMatch>
+          HTACCESS
+          sed -i 's/^          //' schutz/.htaccess
+
+      # 3. Zuerst den Schutz hochladen, dann die Website
+      - name: Passwortschutz hochladen
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: jelk/
+          local-dir: ./schutz/
+          state-name: .stand-schutz.json
+      # Website mit lftp hochladen: eine Datei nach der anderen, bei Abbruch automatisch neu verbinden
+      # (der Server blockt zu viele Verbindungen kurz hintereinander). Dateien von Papa im Ordner bleiben unberührt.
+      - name: Website hochladen
+        env:
+          SERVER: ${{ secrets.FTP_SERVER }}
+          NUTZER: ${{ secrets.FTP_USERNAME }}
+          PW: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          sudo apt-get install -y -qq lftp > /dev/null
+          lftp -u "$NUTZER,$PW" "$SERVER" -e "
+            set ftp:ssl-allow no;
+            set net:max-retries 8;
+            set net:reconnect-interval-base 5;
+            set net:reconnect-interval-max 30;
+            set net:timeout 30;
+            mirror -R --verbose=1 --parallel=1               --exclude-glob .git* --exclude-glob .github/ --exclude-glob alt/               --exclude-glob hilfe/ --exclude-glob schutz/ --exclude-glob README.md               ./ jelk/;
+            quit"
+
+      # 4. Hilfsdatei wieder entfernen
+      - name: Hilfsdatei entfernen
+        run: rm -rf hilfe && mkdir hilfe
+      - name: Hilfsdatei vom Server löschen
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: jelk/
+          local-dir: ./hilfe/
+          state-name: .stand-hilfe.json
+
+      # Aufräumen: frühere Testdatei im Startordner (vor dem Wechsel in den Ordner jelk/) entfernen
+      - name: Alte Testdatei im Startordner löschen
+        env:
+          SERVER: ${{ secrets.FTP_SERVER }}
+          NUTZER: ${{ secrets.FTP_USERNAME }}
+          PW: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          curl -s --user "$NUTZER:$PW" "ftp://$SERVER/" -Q "DELE pfad.php" -o /dev/null || true
+          curl -s --user "$NUTZER:$PW" "ftp://$SERVER/" -Q "DELE .stand-hilfe.json" -o /dev/null || true
+
+      # 5. Prüfen, dass die Seite wirklich nach einem Passwort fragt
+      - name: Passwortschutz prüfen
+        run: |
+          for i in 1 2 3 4 5 6; do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' -A "Mozilla/5.0" "$WEBSITE_URL/")
+            echo "Versuch $i – Antwort ohne Passwort: $CODE"
+            [ "$CODE" = "401" ] && exit 0
+            [ "$CODE" = "429" ] || break
+            sleep 20
+          done
+          echo "Achtung: Die Seite fragt NICHT nach einem Passwort (Antwort $CODE)!"; exit 1
