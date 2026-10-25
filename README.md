@@ -5,7 +5,8 @@
 
 ## Passwortschutz (StatiCrypt)
 
-- Alle HTML-Seiten im Repo sind **verschlüsselt** – das Repo ist öffentlich, die lesbaren Seiten liegen nur lokal in `quelle/` (steht in `.gitignore`).
+- Ausnahme: die Beispiel-Vorschauen in `beispiele/` (Café, Restaurant, Modern/Bistro) sind **ohne Passwort** offen.
+- Alle anderen HTML-Seiten im Repo sind **verschlüsselt** – das Repo ist öffentlich, die lesbaren Seiten liegen nur lokal in `quelle/` (steht in `.gitignore`).
 - **Seiten ändern:** immer in `quelle/` bearbeiten, nie die verschlüsselten Dateien im Hauptordner.
 - **Danach verschlüsseln:** `node verschluesseln.mjs` → Passwort eingeben → committen und pushen.
 - Immer dasselbe Passwort nehmen, sonst gilt „Angemeldet bleiben“ nicht für alle Seiten.

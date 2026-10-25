@@ -33,4 +33,7 @@ if (lauf.status !== 0) process.exit(lauf.status ?? 1);
 // StatiCrypt legt die Dateien unter <ziel>/quelle/ ab → von dort ins Repo kopieren
 cpSync(join(ziel, "quelle"), ".", { recursive: true });
 rmSync(ziel, { recursive: true, force: true });
+
+// Die Beispiel-Vorschauen (Café, Restaurant, Modern/Bistro) bleiben ohne Passwort → lesbar überschreiben
+cpSync(join("quelle", "beispiele"), "beispiele", { recursive: true });
 console.log("Fertig: verschlüsselte Seiten liegen im Repo. Jetzt committen und pushen.");
