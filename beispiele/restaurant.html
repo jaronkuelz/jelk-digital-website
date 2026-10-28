@@ -5,121 +5,394 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trattoria Lume – Beispiel-Website von JELK Digital</title>
 <meta name="robots" content="noindex">
+<meta name="description" content="Trattoria Lume in Freiburg: Pasta, jeden Morgen frisch gemacht, Pizza aus dem Steinofen und Weine von kleinen Familienbetrieben. Beispiel-Website von JELK Digital.">
 <link rel="stylesheet" href="../fonts/schriften.css">
 <style>
-  /* Beispiel-Design: dunkles, warmes italienisches Restaurant */
-  :root { --nacht: #15100D; --nacht-2: #1F1813; --creme: #F3E9DC; --tomate: #E04A2F; --oliv: #9DB06B; --leise: rgba(243,233,220,.7); }
+  /* Beispiel-Design „Schaufenster bei Nacht“: Blattgold hinter Glas, dahinter der Gastraum */
+  :root {
+    --wand: #171310; --holz: #24180f; --holz-kante: #3b2817; --holz-schatten: #120c07;
+    --glas: #0f1512;
+    --gold: #c99a3c; --gold-hell: #f0d58a; --gold-tief: #8a6420;
+    --creme: #efe4cf; --creme-leise: #c9bda6;
+    --rot: #8e1f1a; --rot-dunkel: #6f1612;
+    --anzeige: "Bodoni Moda", Georgia, serif;
+    --text: "Albert Sans", system-ui, sans-serif;
+    --rahmen: clamp(10px, 1.3vw, 18px);
+    --sprosse: clamp(8px, .9vw, 12px);
+    --innen: clamp(18px, 2.6vw, 40px);
+    --raus: cubic-bezier(.16, 1, .3, 1);
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Karla, system-ui, sans-serif; background: var(--nacht); color: var(--creme); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  html { scrollbar-color: var(--holz-kante) var(--wand); }
+  body { font-family: var(--text); background: var(--wand); color: var(--creme); line-height: 1.6; -webkit-font-smoothing: antialiased; font-size: 1.0625rem; caret-color: var(--gold); }
+  ::selection { background: var(--gold); color: var(--glas); }
   img { display: block; width: 100%; height: 100%; object-fit: cover; }
-  h1, h2, h3 { font-family: "Playfair Display", Georgia, serif; font-weight: 500; line-height: 1.08; }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 22px; }
-  .btn { display: inline-block; padding: 14px 28px; background: var(--tomate); color: #fff; text-decoration: none; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-size: .78rem; border-radius: 2px; }
-  .btn.rand { background: transparent; box-shadow: inset 0 0 0 1px var(--creme); }
-  .ueber { font-size: .75rem; letter-spacing: .28em; text-transform: uppercase; color: var(--oliv); font-weight: 700; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--gold-hell); outline-offset: 3px; }
 
-  .hero { position: relative; min-height: 640px; display: flex; flex-direction: column; }
-  .hero > img { position: absolute; inset: 0; }
-  .hero > .wrap { width: 100%; }
-  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(21,16,13,.55) 0%, rgba(21,16,13,.35) 40%, rgba(21,16,13,.95) 100%); }
-  nav { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 24px 0; }
-  .marke { font-family: "Playfair Display", serif; font-size: 1.5rem; font-style: italic; }
-  nav ul { display: none; list-style: none; gap: 36px; font-size: .8rem; letter-spacing: .18em; text-transform: uppercase; }
-  .hero-text { position: relative; z-index: 2; margin-top: auto; padding-bottom: 70px; text-align: center; }
-  .hero h1 { font-size: 3.4rem; margin: 18px 0; }
-  .hero h1 em { font-style: italic; color: var(--tomate); }
-  .hero p { color: var(--leise); max-width: 460px; margin: 0 auto 30px; font-size: 1.05rem; }
-  .hero .knoepfe { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  /* ---------- Blattgold: Schattenkontur hinten, Gold vorne, Glanzlicht darüber ---------- */
+  .gold { position: relative; display: inline-block; font-family: var(--anzeige); color: var(--gold); }
+  .gold > span { display: block; padding-right: .12em; margin-right: -.12em; font-kerning: normal; }
+  .gold .schatten { position: absolute; inset: 0; color: #050706; transform: translate(.04em, .045em); -webkit-text-stroke: .05em #050706; }
+  .gold .blatt {
+    position: relative;
+    background: url("bilder/lume-blattgold.webp") 0 0 / 256px 256px repeat;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    -webkit-text-stroke: .012em rgba(255, 236, 170, .35);
+  }
+  .gold .glanz {
+    position: absolute; inset: 0;
+    background: linear-gradient(105deg, transparent calc(var(--glanz, -30%) - 14%), rgba(255, 246, 214, .95) var(--glanz, -30%), transparent calc(var(--glanz, -30%) + 14%));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
 
-  section { padding: 72px 0; }
-  .zentriert { text-align: center; margin-bottom: 44px; }
-  .zentriert h2 { font-size: 2.5rem; margin-top: 12px; }
-  .gerichte { display: grid; gap: 26px; }
-  .gericht .bild { aspect-ratio: 1/1; border-radius: 50%; overflow: hidden; max-width: 260px; margin: 0 auto 20px; }
-  .gericht { text-align: center; }
-  .gericht h3 { font-size: 1.45rem; }
-  .gericht p { color: var(--leise); font-size: .95rem; margin: 4px 0 8px; }
-  .gericht b { color: var(--tomate); font-family: "Playfair Display", serif; font-weight: 500; font-size: 1.15rem; }
+  /* ---------- Fenster: Holzrahmen, Sprossen, Scheiben ---------- */
+  .fassade { padding: clamp(10px, 2vw, 28px); display: grid; gap: clamp(40px, 6vw, 88px); }
+  .rahmen { position: relative; border: var(--rahmen) solid var(--holz); border-image: url("bilder/lume-rahmen.webp") 60 / var(--rahmen) stretch; background: var(--holz); box-shadow: inset 0 0 0 1px var(--holz-kante), 0 20px 40px -24px #000; }
+  .raum { position: absolute; inset: 0; overflow: hidden; background: #000; }
+  .scheiben { position: relative; display: grid; }
+  .scheibe {
+    position: relative; padding: var(--innen);
+    border: calc(var(--sprosse) / 2) solid var(--holz);
+    border-image: url("bilder/lume-rahmen.webp") 60 / calc(var(--sprosse) / 2) stretch;
+    background: rgba(9, 14, 11, .62);
+    /* Glasleiste und dunkler Glasrand */
+    box-shadow: inset 0 0 0 1px #07050300, inset 0 2px 0 rgba(0, 0, 0, .55), inset 0 0 0 2px rgba(10, 7, 4, .8), inset 0 0 0 3px rgba(255, 214, 150, .07), inset 0 0 48px rgba(0, 0, 0, .45);
+  }
+  /* schwache Spiegelung im Glas */
+  .scheibe::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(118deg, transparent 30%, rgba(255, 244, 220, .075) 38%, rgba(255, 244, 220, .02) 44%, transparent 50%); }
+  .scheibe.klar { background: transparent; padding: 0; }
+  .scheibe.klar img { min-height: 220px; filter: sepia(.6) saturate(1.25) brightness(.6) contrast(1.08) hue-rotate(-6deg); }
+  .kaempfer { grid-column: 1 / -1; background: var(--holz) url("bilder/lume-holz.webp") 0 0 / 384px repeat; border-top: 1px solid rgba(255, 214, 150, .14); border-bottom: 2px solid var(--holz-schatten); padding: 10px var(--innen); display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 
-  .geschichte { background: var(--nacht-2); }
-  .geschichte .wrap { display: grid; gap: 40px; align-items: center; }
-  .geschichte .bild { aspect-ratio: 4/5; overflow: hidden; }
-  .geschichte h2 { font-size: 2.4rem; margin: 14px 0 18px; }
-  .geschichte p { color: var(--leise); }
-  .zitat { margin-top: 26px; padding-left: 18px; border-left: 2px solid var(--tomate); font-family: "Playfair Display", serif; font-style: italic; font-size: 1.25rem; }
+  /* gemalte Kleinschrift */
+  .gemalt { font-family: var(--anzeige); font-style: italic; color: var(--gold); }
+  .versal { font-size: .8125rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
 
-  .reservieren { text-align: center; }
-  .reservieren h2 { font-size: 2.6rem; margin: 12px 0 14px; }
-  .reservieren p { color: var(--leise); margin-bottom: 28px; }
-  .zeiten { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; margin-top: 44px; color: var(--leise); font-size: .95rem; }
-  .zeiten b { display: block; color: var(--creme); font-family: "Playfair Display", serif; font-weight: 500; font-size: 1.2rem; }
-  footer { border-top: 1px solid rgba(243,233,220,.12); padding: 30px 0 40px; font-size: .82rem; color: var(--leise); }
-  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  /* ---------- Erster Bildschirm ---------- */
+  .schaufenster { min-height: calc(100svh - 2 * clamp(10px, 2vw, 28px)); display: grid; }
+  .schaufenster .rahmen { display: grid; }
+  .schaufenster .scheiben { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr auto; }
+  .raum img { object-position: 35% 70%; filter: brightness(var(--licht, .16)) sepia(.6) saturate(1.5) hue-rotate(-12deg); transform: scale(1.04); transition: filter 1.8s var(--raus); }
+  .schaufenster[data-licht="offen"] { --licht: .95; --waerme: 1; }
+  .schaufenster[data-licht="gleich"] { --licht: .7; --waerme: .6; }
+  .schaufenster[data-licht="zu"] { --licht: .55; --waerme: .75; }
+  .schaufenster.dunkel { --licht: .08; --waerme: 0; }
+  /* warmer Lichtschein der Lampen, nur wenn offen */
+  .raum::after { content: ""; position: absolute; inset: 0; background: radial-gradient(45% 45% at 78% 22%, rgba(255, 160, 60, .4), transparent 70%), radial-gradient(70% 60% at 30% 70%, rgba(255, 150, 60, .16), transparent 75%); opacity: var(--waerme, 0); transition: opacity 1.8s var(--raus); }
 
-  .zurueck { position: fixed; left: 16px; bottom: 16px; z-index: 9; background: #F4F1EA; color: #0B0B0C; text-decoration: none; font-size: .8rem; padding: 10px 16px; border-radius: 999px; display: none; }
+  .oberlicht { background: rgba(26, 14, 6, .12); text-align: center; display: grid; place-content: center; gap: 6px; padding-block: clamp(26px, 5vh, 56px); }
+  .oberlicht h1 { font-weight: 400; line-height: .92; }
+  .oberlicht h1 .gold { font-size: clamp(3.25rem, 1.2rem + 7.4vw, 6rem); font-weight: 800; font-variation-settings: "opsz" 96; letter-spacing: -.01em; }
+  .oberlicht .unter { font-size: clamp(1.05rem, .9rem + .6vw, 1.4rem); color: var(--creme); letter-spacing: .02em; }
+  .oberlicht .unter b { font-weight: 400; color: var(--gold); font-family: var(--anzeige); font-style: italic; }
+
+  nav ul { list-style: none; display: flex; align-items: baseline; gap: clamp(14px, 2.6vw, 36px); }
+  .kaempfer { align-items: baseline; }
+  .kaempfer a { display: inline-block; }
+  nav a { text-decoration: none; color: var(--gold); padding-block: 6px; }
+  nav a:hover { color: var(--gold-hell); }
+  .nur-gross { display: none !important; }
+
+  .angebot { display: grid; align-content: center; gap: 18px; background: rgba(22, 12, 6, .5); }
+  .angebot .gold { font-size: clamp(1.9rem, 1.2rem + 2.2vw, 3rem); font-style: italic; font-weight: 600; line-height: 1.05; }
+  .angebot ul { list-style: none; display: grid; gap: 4px; color: var(--creme); }
+  .angebot li::before { content: ""; display: inline-block; width: 14px; height: 1px; background: var(--gold); vertical-align: middle; margin-right: 12px; }
+  .status { color: var(--creme-leise); font-size: .98rem; }
+  .status strong { color: var(--gold); font-weight: 600; }
+
+  .reservieren { display: grid; align-content: center; gap: 16px; background: rgba(16, 10, 6, .74); }
+  .reservieren h2 { font-family: var(--anzeige); font-weight: 700; font-variation-settings: "opsz" 11; font-size: clamp(1.6rem, 1.2rem + 1.2vw, 2.25rem); line-height: 1.05; color: var(--gold); }
+  .felder { display: grid; grid-template-columns: 1.4fr 1fr .8fr; gap: 14px; }
+  .felder label { display: grid; gap: 4px; font-size: .8125rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--creme-leise); }
+  .felder select {
+    appearance: none; width: 100%; min-height: 48px; padding: 0 28px 0 2px; border: 0; border-bottom: 2px solid var(--gold); border-radius: 0;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23c99a3c' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 4px center;
+    color: var(--creme); font: 600 1.0625rem var(--text); letter-spacing: 0; text-transform: none; cursor: pointer;
+    font-variant-numeric: tabular-nums;
+  }
+  .felder select:hover { border-bottom-color: var(--gold-hell); }
+  .felder option { background: var(--glas); color: var(--creme); }
+  .knopf {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 26px; border: 0; border-radius: 0;
+    background: var(--rot); color: #fff; font: 700 1rem var(--text); letter-spacing: .02em; text-decoration: none; cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(240, 213, 138, .35);
+    transition: background-color .2s var(--raus), transform .2s var(--raus);
+  }
+  .knopf:hover { background: var(--rot-dunkel); }
+  .knopf:active { transform: scale(.97); }
+  .reservieren .knopf { justify-self: start; }
+  .hinweis { font-size: .92rem; color: var(--creme-leise); }
+  .danke { font-family: var(--anzeige); font-style: italic; color: var(--gold-hell); font-size: 1.15rem; min-height: 1.6em; }
+
+  /* ---------- Karte ---------- */
+  .karte .scheiben { grid-template-columns: 1fr; }
+  .karte .kopf { text-align: center; display: grid; gap: 8px; padding-block: clamp(28px, 4vw, 52px); }
+  h2.gold { font-size: clamp(2.2rem, 1.5rem + 2.4vw, 3.75rem); font-weight: 800; font-variation-settings: "opsz" 11; line-height: 1.02; letter-spacing: -.01em; }
+  .karte .kopf p { color: var(--creme-leise); }
+  .gang h3 { font-family: var(--anzeige); font-weight: 700; font-variation-settings: "opsz" 11; font-style: italic; font-size: 1.6rem; color: var(--gold); margin-bottom: 14px; line-height: 1.1; }
+  .gang ul { list-style: none; display: grid; gap: 14px; }
+  .gang li { display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; }
+  .gang li b { font-weight: 600; color: var(--creme); }
+  .gang li span { grid-column: 1; color: var(--creme-leise); font-size: .95rem; line-height: 1.45; }
+  .gang li i { grid-column: 2; grid-row: 1; font-style: normal; color: var(--gold); font-variant-numeric: tabular-nums; font-weight: 600; }
+  .gang li em { grid-column: 1; font-family: var(--anzeige); color: var(--gold); font-size: .95rem; }
+  .karte .scheibe.klar { min-height: 240px; }
+  h2.gold .blatt { filter: brightness(.84) saturate(.85); -webkit-text-stroke: 0; }
+  .reservieren h2 { background: url("bilder/lume-blattgold.webp") 0 0 / 256px 256px repeat; -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+  /* ---------- Geschichte ---------- */
+  .geschichte .scheiben { grid-template-columns: 1fr; }
+  .geschichte .text { display: grid; align-content: center; gap: 18px; }
+  .geschichte h2 { line-height: 1.02; }
+  .geschichte p { color: var(--creme-leise); max-width: 34em; }
+  .zitat { font-family: var(--anzeige); font-style: italic; font-size: clamp(1.3rem, 1.1rem + .7vw, 1.7rem); color: var(--gold); line-height: 1.3; }
+
+  /* ---------- Tür: Öffnungszeiten und Adresse ---------- */
+  .tuer .scheiben { grid-template-columns: 1fr; }
+  .tuer .scheibe { text-align: center; display: grid; justify-items: center; gap: 18px; padding-block: clamp(36px, 5vw, 64px); }
+  .zeiten { display: grid; gap: 6px; font-variant-numeric: tabular-nums; }
+  .zeiten div { display: grid; grid-template-columns: 4.5em 9em; gap: 18px; justify-content: center; white-space: nowrap; }
+  .zeiten dt { color: var(--creme-leise); text-align: right; }
+  .zeiten dd { color: var(--creme); text-align: left; }
+  .adresse { font-family: var(--anzeige); font-size: clamp(1.4rem, 1.1rem + 1.2vw, 2.1rem); line-height: 1.2; color: var(--creme); }
+  .adresse a { color: var(--gold); text-underline-offset: 5px; text-decoration-thickness: 1px; }
+
+  footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; padding: 26px clamp(18px, 3vw, 44px) 42px; color: var(--creme-leise); font-size: .875rem; }
+
+  .zurueck { position: fixed; left: 16px; bottom: 16px; z-index: 9; background: var(--creme); color: var(--wand); text-decoration: none; font-size: .85rem; font-weight: 600; padding: 10px 16px; display: none; align-items: center; gap: 8px; }
 
   @media (min-width: 820px) {
-    nav ul { display: flex; }
-    .hero { min-height: 760px; }
-    .hero h1 { font-size: 5.6rem; }
-    .gerichte { grid-template-columns: repeat(3, 1fr); gap: 40px; }
-    .geschichte .wrap { grid-template-columns: 1fr 1fr; gap: 80px; }
-    section { padding: 100px 0; }
+    .nur-gross { display: list-item !important; list-style: none; }
+    .schaufenster .scheiben { grid-template-columns: 1.1fr 1fr; grid-template-rows: auto auto 1fr; }
+    .oberlicht { grid-column: 1 / -1; }
+    .karte .scheiben { grid-template-columns: repeat(3, 1fr); }
+    .karte .kopf { grid-column: 1 / -1; }
+    .geschichte .scheiben { grid-template-columns: 1fr 1.1fr; }
+    .geschichte .scheibe.klar img { min-height: 520px; }
+  }
+  @media (max-width: 819px) {
+    .angebot ul { display: none; }
+    .angebot { gap: 10px; padding-block: 18px; }
+    .felder { grid-template-columns: 1fr 1fr; }
+    .felder label:first-child { grid-column: 1 / -1; }
+    .reservieren .knopf { justify-self: stretch; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .raum img { transition: none; }
+    .gold .glanz { display: none; }
   }
 </style>
 </head>
 <body>
-<header class="hero">
-  <img src="bilder/restaurant-warm-beleuchteter-gastraum-der-trattoria.webp" alt="Warm beleuchteter Gastraum der Trattoria">
-  <div class="wrap"><nav>
-    <div class="marke">Trattoria Lume</div>
-    <ul><li>Menü</li><li>Wein</li><li>Geschichte</li><li>Kontakt</li></ul>
-    <a class="btn rand" href="#reservieren">Reservieren</a>
-  </nav></div>
-  <div class="wrap hero-text">
-    <span class="ueber">Cucina italiana · seit 1998</span>
-    <h1>Pasta, wie bei <em>Nonna</em>.</h1>
-    <p>Frisch gemacht, jeden Morgen. Dazu Weine aus kleinen Familienbetrieben – und ein Abend, den man nicht vergisst.</p>
-    <div class="knoepfe"><a class="btn" href="#reservieren">Tisch reservieren</a><a class="btn rand" href="#menue">Speisekarte</a></div>
-  </div>
-</header>
 
-<section id="menue">
-  <div class="wrap">
-    <div class="zentriert"><span class="ueber">Aus unserer Küche</span><h2>Heute empfohlen</h2></div>
-    <div class="gerichte">
-      <article class="gericht"><div class="bild"><img src="bilder/restaurant-penne-al-ragu.webp" alt="Penne al ragù" loading="lazy"></div><h3>Penne al ragù</h3><p>Rinderragout, San-Marzano-Tomaten, Parmigiano</p><b>14,50</b></article>
-      <article class="gericht"><div class="bild"><img src="bilder/restaurant-pizza-margherita.webp" alt="Pizza Margherita" loading="lazy"></div><h3>Margherita DOP</h3><p>Fior di latte, Basilikum, Steinofen</p><b>12,00</b></article>
-      <article class="gericht"><div class="bild"><img src="bilder/restaurant-farfalle-mit-pesto.webp" alt="Farfalle mit Pesto" loading="lazy"></div><h3>Farfalle al pesto</h3><p>Pesto genovese, Kirschtomaten, Rucola</p><b>15,90</b></article>
+<div class="fassade">
+  <header class="schaufenster" id="start" data-licht="zu">
+    <div class="rahmen">
+      <div class="raum" aria-hidden="true"><img src="bilder/restaurant-warm-beleuchteter-gastraum-der-trattoria.webp" alt="" fetchpriority="high"></div>
+      <div class="scheiben">
+        <div class="scheibe oberlicht">
+          <h1><span class="gold"><span class="schatten" aria-hidden="true">Trattoria Lume</span><span class="blatt">Trattoria Lume</span><span class="glanz" aria-hidden="true">Trattoria Lume</span></span></h1>
+          <p class="unter"><b>Cucina italiana</b> in der Freiburger Altstadt · seit 1998</p>
+        </div>
+        <nav class="kaempfer" aria-label="Hauptnavigation">
+          <ul class="versal">
+            <li><a href="#karte">Karte</a></li>
+            <li><a href="#geschichte">Geschichte</a></li>
+            <li class="nur-gross"><a href="#tuer">Öffnungszeiten</a></li>
+          </ul>
+          <a class="versal" href="#reservieren" style="color:var(--gold-hell);text-decoration:none">Reservieren</a>
+        </nav>
+        <div class="scheibe angebot">
+          <p class="gold"><span class="schatten" aria-hidden="true">Pasta fresca, ogni mattina.</span><span class="blatt">Pasta fresca, ogni mattina.</span></p>
+          <ul>
+            <li>Pasta, jeden Morgen frisch gemacht</li>
+            <li>Pizza aus dem Steinofen</li>
+            <li>Weine von kleinen Familienbetrieben</li>
+          </ul>
+          <p class="status" id="status" aria-live="polite">Di – Sa ab 17:30 Uhr, So ab 12 Uhr</p>
+        </div>
+        <form class="scheibe reservieren" id="reservieren" action="mailto:tisch@trattoria-lume.de" method="get">
+          <h2>Tisch reservieren</h2>
+          <div class="felder">
+            <label>Tag<select name="tag" id="tag"></select></label>
+            <label>Uhrzeit<select name="zeit" id="zeit"></select></label>
+            <label>Personen<select name="personen" id="personen"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label>
+          </div>
+          <button class="knopf" type="submit">Tisch reservieren</button>
+          <p class="hinweis">Wir bestätigen per E-Mail. (Beispielseite: Das Formular öffnet nur dein E-Mail-Programm.)</p>
+          <p class="danke" id="danke" aria-live="polite"></p>
+        </form>
+      </div>
     </div>
-  </div>
-</section>
+  </header>
 
-<section class="geschichte">
-  <div class="wrap">
-    <div class="bild"><img src="bilder/restaurant-gaeste-bei-kerzenlicht.webp" alt="Gäste bei Kerzenlicht" loading="lazy"></div>
-    <div>
-      <span class="ueber">Unsere Geschichte</span>
-      <h2>Eine Familie. Ein Ofen. Viele Abende.</h2>
-      <p>Was als kleine Küche mit sechs Tischen begann, ist heute ein Treffpunkt für alle, die gutes Essen und lange Gespräche lieben. Die Rezepte sind dieselben geblieben.</p>
-      <p class="zitat">„Kochen ist Liebe, die man schmecken kann.“</p>
-    </div>
-  </div>
-</section>
+  <main>
+    <section class="rahmen karte" id="karte" aria-labelledby="karte-titel">
+      <div class="raum" aria-hidden="true" style="background:var(--glas)"></div>
+      <div class="scheiben">
+        <div class="scheibe kopf">
+          <h2 class="gold" id="karte-titel"><span class="schatten" aria-hidden="true">La carta</span><span class="blatt">La carta</span></h2>
+          <p>Die Pasta machen wir jeden Morgen selbst. Preise in Euro.</p>
+        </div>
+        <div class="scheibe gang">
+          <h3>Antipasti</h3>
+          <ul>
+            <li><b>Bruschetta al pomodoro</b><i>7,50</i><span>Tomaten, Knoblauch, Basilikum, Olivenöl</span></li>
+            <li><b>Burrata</b><i>11,50</i><span>Kirschtomaten, Rucola, Basilikumöl</span></li>
+            <li><b>Vitello tonnato</b><i>12,90</i><span>Kalbfleisch, Thunfischsauce, Kapern</span></li>
+          </ul>
+        </div>
+        <div class="scheibe gang">
+          <h3>Pasta della casa</h3>
+          <ul>
+            <li><b>Penne al ragù</b><i>14,50</i><span>Rinderragout, San-Marzano-Tomaten, Parmigiano</span><em>heute empfohlen</em></li>
+            <li><b>Farfalle al pesto</b><i>15,90</i><span>Pesto genovese, Kirschtomaten, Rucola</span></li>
+            <li><b>Cacio e pepe</b><i>13,90</i><span>Pecorino romano, schwarzer Pfeffer</span></li>
+            <li><b>Tagliatelle ai funghi</b><i>17,50</i><span>Steinpilze, Petersilie, Butter</span></li>
+          </ul>
+        </div>
+        <div class="scheibe klar"><img src="bilder/restaurant-penne-al-ragu.webp" alt="Penne al ragù im tiefen Teller" loading="lazy"></div>
+        <div class="scheibe klar"><img src="bilder/restaurant-pizza-margherita.webp" alt="Pizza Margherita aus dem Steinofen" loading="lazy"></div>
+        <div class="scheibe gang">
+          <h3>Pizza dal forno</h3>
+          <ul>
+            <li><b>Margherita DOP</b><i>12,00</i><span>Fior di latte, Basilikum, Steinofen</span></li>
+            <li><b>Diavola</b><i>13,50</i><span>Scharfe Salami, Tomaten, Mozzarella</span></li>
+            <li><b>Quattro formaggi</b><i>14,00</i><span>Vier Käse, Walnüsse</span></li>
+          </ul>
+        </div>
+        <div class="scheibe gang">
+          <h3>Dolci</h3>
+          <ul>
+            <li><b>Tiramisù della Nonna</b><i>7,00</i><span>Mascarpone, Espresso, Kakao</span></li>
+            <li><b>Panna cotta</b><i>6,50</i><span>Waldbeeren</span></li>
+            <li><b>Affogato</b><i>5,50</i><span>Vanilleeis, heißer Espresso</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-<section id="reservieren" class="reservieren">
-  <div class="wrap">
-    <span class="ueber">Wir freuen uns auf dich</span>
-    <h2>Reserviere deinen Tisch</h2>
-    <p>Online in einer Minute – oder ruf uns einfach an.</p>
-    <a class="btn" href="#">Jetzt reservieren</a>
-    <div class="zeiten"><span><b>Di – Sa</b>17:30 – 23 Uhr</span><span><b>So</b>12 – 22 Uhr</span><span><b>Adresse</b>Beispielweg 5, Freiburg</span></div>
-  </div>
-</section>
+    <section class="rahmen geschichte" id="geschichte" aria-labelledby="geschichte-titel">
+      <div class="raum" aria-hidden="true" style="background:var(--glas)"></div>
+      <div class="scheiben">
+        <div class="scheibe klar"><img src="bilder/restaurant-gaeste-bei-kerzenlicht.webp" alt="Gäste beim Abendessen bei Kerzenlicht" loading="lazy"></div>
+        <div class="scheibe text">
+          <h2 class="gold" id="geschichte-titel"><span class="schatten" aria-hidden="true">Eine Familie. Ein Ofen. Viele Abende.</span><span class="blatt">Eine Familie. Ein Ofen. Viele Abende.</span></h2>
+          <p>Was als kleine Küche mit sechs Tischen begann, ist heute ein Treffpunkt für alle, die gutes Essen und lange Gespräche lieben. Die Rezepte sind dieselben geblieben.</p>
+          <p class="zitat">„Kochen ist Liebe, die man schmecken kann.“</p>
+        </div>
+      </div>
+    </section>
 
-<footer><div class="wrap"><span>© Trattoria Lume</span><span>Beispiel-Design von JELK Digital</span></div></footer>
+    <section class="rahmen tuer" id="tuer" aria-labelledby="tuer-titel">
+      <div class="raum" aria-hidden="true" style="background:var(--glas)"></div>
+      <div class="scheiben">
+        <div class="scheibe">
+          <h2 class="gold" id="tuer-titel"><span class="schatten" aria-hidden="true">Wir freuen uns auf dich</span><span class="blatt">Wir freuen uns auf dich</span></h2>
+          <dl class="zeiten">
+            <div><dt>Di – Sa</dt><dd>17:30 – 23:00 Uhr</dd></div>
+            <div><dt>So</dt><dd>12:00 – 22:00 Uhr</dd></div>
+            <div><dt>Mo</dt><dd>Ruhetag</dd></div>
+          </dl>
+          <p class="adresse">Beispielweg 5, 79098 Freiburg<br><a href="mailto:tisch@trattoria-lume.de">tisch@trattoria-lume.de</a></p>
+          <a class="knopf" href="#reservieren">Tisch reservieren</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
 
-<a class="zurueck" href="../index.html#beispiele">← Zurück zu JELK Digital</a>
-<script>if (window.self === window.top && !location.search.includes("vorschau")) document.querySelector(".zurueck").style.display = "block";</script>
+<footer>
+  <span>© Trattoria Lume</span>
+  <span>Beispiel-Design von JELK Digital – die Trattoria ist erfunden</span>
+</footer>
+
+<a class="zurueck" href="../index.html#beispiele"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M13 7H2M6 2.5 1.5 7 6 11.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Zurück zu JELK Digital</a>
+
+<script>
+  if (window.self === window.top && !location.search.includes("vorschau")) document.querySelector(".zurueck").style.display = "inline-flex";
+
+  const ruhig = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Öffnungszeiten (Europe/Berlin) ---------- */
+  // Wochentag 0 = Sonntag; Minuten seit Mitternacht
+  const OFFEN = { 0: [720, 1320], 2: [1050, 1380], 3: [1050, 1380], 4: [1050, 1380], 5: [1050, 1380], 6: [1050, 1380] };
+  const NAMEN = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+  const KURZ = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+  const uhr = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
+  const berlin = () => {
+    const t = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Berlin", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false })
+      .formatToParts(new Date()).map((p) => [p.type, p.value]));
+    const datum = new Date(Date.UTC(+t.year, +t.month - 1, +t.day));
+    return { datum, tag: datum.getUTCDay(), min: (+t.hour % 24) * 60 + +t.minute };
+  };
+  const fenster = document.querySelector(".schaufenster"), status = document.getElementById("status");
+  const lichtStellen = () => {
+    const { tag, min } = berlin(), heute = OFFEN[tag];
+    let licht = "zu", text;
+    if (heute && min >= heute[0] && min < heute[1]) {
+      licht = "offen"; text = `<strong>Jetzt geöffnet</strong> – heute bis ${uhr(heute[1])} Uhr`;
+    } else if (heute && min < heute[0]) {
+      licht = heute[0] - min <= 60 ? "gleich" : "zu";
+      text = `Heute ab <strong>${uhr(heute[0])} Uhr</strong> geöffnet` + (licht === "gleich" ? ` – in ${heute[0] - min} Min.` : "");
+    } else {
+      let d = 1; while (!OFFEN[(tag + d) % 7]) d++;
+      const n = (tag + d) % 7;
+      text = `Geschlossen – wieder offen ${d === 1 ? "morgen" : "am " + NAMEN[n]} ab <strong>${uhr(OFFEN[n][0])} Uhr</strong>`;
+    }
+    fenster.dataset.licht = licht; status.innerHTML = text;
+  };
+  lichtStellen(); setInterval(lichtStellen, 60000);
+  // Das Licht im Gastraum geht nach dem Laden an
+  if (!ruhig && document.visibilityState === "visible") {
+    fenster.classList.add("dunkel"); void fenster.offsetWidth; fenster.classList.remove("dunkel");
+  }
+
+  /* ---------- Glanzlicht auf dem Blattgold ---------- */
+  if (!ruhig) {
+    const start = performance.now();
+    const wisch = (jetzt) => {
+      const p = Math.min((jetzt - start - 500) / 1600, 1);
+      if (p > 0) fenster.style.setProperty("--glanz", `${-30 + 160 * (1 - Math.pow(1 - p, 3))}%`);
+      if (p < 1) requestAnimationFrame(wisch);
+      else if (matchMedia("(pointer: fine)").matches) {
+        fenster.addEventListener("pointermove", (e) => {
+          const r = fenster.getBoundingClientRect();
+          fenster.style.setProperty("--glanz", `${((e.clientX - r.left) / r.width) * 100}%`);
+        });
+      }
+    };
+    requestAnimationFrame(wisch);
+  }
+
+  /* ---------- Reservierung ---------- */
+  const tagFeld = document.getElementById("tag"), zeitFeld = document.getElementById("zeit");
+  const { datum: heuteDatum, tag: heuteTag, min: jetztMin } = berlin();
+  for (let d = 0, n = 0; d < 21 && n < 12; d++) {
+    const w = (heuteTag + d) % 7, z = OFFEN[w];
+    if (!z) continue;
+    if (d === 0 && jetztMin > z[1] - 90) continue;
+    const t = new Date(heuteDatum.getTime() + d * 864e5);
+    const iso = t.toISOString().slice(0, 10);
+    const name = d === 0 ? "Heute" : d === 1 ? "Morgen" : `${KURZ[w]}, ${t.getUTCDate()}.${t.getUTCMonth() + 1}.`;
+    tagFeld.add(new Option(name, iso)); n++;
+  }
+  const zeitenFuellen = () => {
+    const iso = tagFeld.value, w = new Date(iso + "T12:00:00Z").getUTCDay(), z = OFFEN[w];
+    const alt = zeitFeld.value; zeitFeld.innerHTML = "";
+    const ab = iso === heuteDatum.toISOString().slice(0, 10) ? Math.max(z[0], Math.ceil((jetztMin + 30) / 30) * 30) : z[0];
+    for (let m = ab; m <= z[1] - 90; m += 30) zeitFeld.add(new Option(uhr(m), uhr(m)));
+    zeitFeld.value = [...zeitFeld.options].some((o) => o.value === alt) ? alt : (zeitFeld.options[Math.min(2, zeitFeld.options.length - 1)] || {}).value;
+  };
+  tagFeld.addEventListener("change", zeitenFuellen); zeitenFuellen();
+  document.getElementById("reservieren").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const tag = tagFeld.options[tagFeld.selectedIndex].text, zeit = zeitFeld.value, personen = document.getElementById("personen").value;
+    const text = `Ciao Lume-Team,\n\nich möchte einen Tisch reservieren:\nTag: ${tag} (${tagFeld.value})\nUhrzeit: ${zeit} Uhr\nPersonen: ${personen}\n\nViele Grüße`;
+    document.getElementById("danke").textContent = `Grazie! Deine E-Mail für ${personen} ${personen === "1" ? "Person" : "Personen"} – ${tag}, ${zeit} Uhr – öffnet sich.`;
+    location.href = `mailto:tisch@trattoria-lume.de?subject=${encodeURIComponent(`Reservierung für ${personen} – ${tag}, ${zeit} Uhr`)}&body=${encodeURIComponent(text)}`;
+  });
+</script>
 </body>
 </html>

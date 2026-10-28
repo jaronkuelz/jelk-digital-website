@@ -5,139 +5,378 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Saison – Beispiel-Website von JELK Digital</title>
 <meta name="robots" content="noindex">
+<meta name="description" content="Saison – Küche & Wein in Freiburg: ein Menü, das sich mit den Jahreszeiten verändert, mit Zutaten von Erzeugern aus der Region. Beispiel-Website von JELK Digital.">
 <link rel="stylesheet" href="../fonts/schriften.css">
 <style>
-  /* Beispiel-Design: modernes Restaurant, regional & saisonal */
-  :root { --papier: #F1EEE7; --tinte: #111311; --gruen: #2D5A3D; --safran: #F2A516; --leise: rgba(17,19,17,.65); }
+  /* Beispiel-Design „Lieferschein von heute“: Durchschreibepapier, Formdruck, Blaupausen-Hand, Stempel */
+  :root {
+    --gelb: #efd75a; --gelb-tief: #e3c844; --rosa: #f2b5c0; --weiss: #faf7ee;
+    --druck: #1f4d33; --druck-leise: #2a553b;
+    --blau: #25348c; --stempel: #b8326b; --stempel-dunkel: #96244f;
+    --form: "Archivo", "Arial Narrow", sans-serif;
+    --hand: "Kalam", "Segoe Print", cursive;
+    --rand: clamp(16px, 3.2vw, 48px);
+    --raus: cubic-bezier(.16, 1, .3, 1);
+    /* feine Papierfaser */
+    --faser: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23f)'/%3E%3C/svg%3E");
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: Inter, system-ui, sans-serif; background: var(--papier); color: var(--tinte); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  html { scrollbar-color: var(--druck) var(--gelb-tief); }
+  body { font-family: var(--form); font-stretch: 87%; background: var(--gelb) var(--faser); color: var(--druck); line-height: 1.5; -webkit-font-smoothing: antialiased; font-size: 1.0625rem; caret-color: var(--blau); }
+  ::selection { background: var(--blau); color: var(--weiss); }
   img { display: block; width: 100%; height: 100%; object-fit: cover; }
-  h1, h2, h3 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; line-height: 1; letter-spacing: -0.01em; }
-  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 22px; }
-  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; background: var(--tinte); color: var(--papier); text-decoration: none; font-weight: 500; font-size: .92rem; border-radius: 999px; }
-  .btn.safran { background: var(--safran); color: var(--tinte); }
-  .label { font-size: .75rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+  a { color: inherit; text-underline-offset: 4px; }
+  :focus-visible { outline: 2px solid var(--blau); outline-offset: 3px; }
 
-  nav { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; border-bottom: 1px solid rgba(17,19,17,.15); }
-  .marke { font-weight: 600; letter-spacing: .3em; font-size: .95rem; }
-  nav ul { display: none; list-style: none; gap: 30px; font-size: .9rem; }
+  /* Handschrift durch Kohlepapier */
+  .hand { font-family: var(--hand); font-stretch: normal; color: var(--blau); text-shadow: 0 0 .7px rgba(37, 52, 140, .55); line-height: 1.25; }
+  .feld { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-stretch: 100%; color: var(--druck-leise); }
 
-  .kopf { padding: 44px 0 30px; }
-  .kopf h1 { font-size: 4.2rem; }
-  .kopf h1 em { color: var(--gruen); }
-  .kopf-unten { display: grid; gap: 22px; margin-top: 26px; align-items: end; }
-  .kopf-unten p { color: var(--leise); max-width: 420px; }
-  .collage { display: grid; grid-template-columns: 1.4fr 1fr; gap: 12px; margin-top: 18px; }
-  .collage div { border-radius: 20px; overflow: hidden; aspect-ratio: 4/3.2; }
-  .collage div:first-child { grid-row: span 2; aspect-ratio: auto; }
+  /* Perforation an der Abrisskante */
+  .blatt { position: relative; background-color: var(--weiss); background-image: var(--faser); }
+  .blatt::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 8px; background: radial-gradient(circle at 5px 4px, var(--loch, var(--gelb)) 2.2px, transparent 2.6px) 0 0 / 12px 8px repeat-x; }
 
-  section { padding: 72px 0; }
-  .menue { display: grid; gap: 40px; }
-  .menue h2 { font-size: 3rem; margin-top: 10px; }
-  .menue h2 em { color: var(--gruen); }
-  .gaenge { list-style: none; counter-reset: gang; }
-  .gaenge li { counter-increment: gang; display: grid; grid-template-columns: 44px 1fr; gap: 8px; padding: 18px 0; border-top: 1px solid rgba(17,19,17,.15); }
-  .gaenge li::before { content: "0" counter(gang); font-size: .8rem; font-weight: 600; color: var(--gruen); padding-top: 6px; }
-  .gaenge h3 { font-size: 1.6rem; }
-  .gaenge p { color: var(--leise); font-size: .93rem; }
-  .menue-preis { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--tinte); }
-  .menue-preis b { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 2rem; }
+  /* ---------- Formkopf ---------- */
+  .kopf { display: grid; grid-template-columns: 1fr auto; gap: 10px 24px; align-items: end; padding: 18px var(--rand) 14px; border-bottom: 2px solid var(--druck); }
+  .marke { font-weight: 800; font-stretch: 125%; letter-spacing: .22em; font-size: 1.25rem; line-height: 1; }
+  .marke small { display: block; font-weight: 500; font-stretch: 87%; letter-spacing: .02em; font-size: .9rem; margin-top: 6px; }
+  .beleg { display: flex; gap: 22px; align-items: baseline; text-align: right; }
+  .beleg .hand { font-size: 1.25rem; }
+  nav { grid-column: 1 / -1; }
+  nav ul { list-style: none; display: flex; flex-wrap: wrap; gap: 4px 26px; font-weight: 600; font-stretch: 100%; }
+  nav a { text-decoration: none; padding-block: 4px; }
+  nav a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
 
-  .wein { background: var(--gruen); color: var(--papier); border-radius: 28px; overflow: hidden; display: grid; }
-  .wein .text { padding: 44px 28px; }
-  .wein h2 { font-size: 3rem; margin: 12px 0 16px; }
-  .wein p { color: rgba(241,238,231,.78); margin-bottom: 26px; max-width: 420px; }
-  .wein .bild { min-height: 280px; }
+  /* ---------- Erster Bildschirm ---------- */
+  .lieferung { display: grid; grid-template-areas: "kopf" "tisch" "liste"; gap: 24px;  padding: clamp(18px, 2.6vw, 36px) var(--rand) clamp(40px, 5vw, 64px); }
+  h1 { font-weight: 800; font-stretch: 68%; font-size: clamp(2.9rem, 1.6rem + 4.6vw, 5.75rem); line-height: .9; letter-spacing: -.01em; text-wrap: balance; }
+  .einleitung { max-width: 40em; margin-top: 12px; color: var(--druck); }
 
-  .fuss { display: grid; gap: 30px; padding: 72px 0 40px; }
-  .fuss h2 { font-size: 3.4rem; }
-  .fuss .spalten { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: .95rem; }
-  .fuss .spalten b { display: block; margin-bottom: 4px; }
-  .fuss .spalten span { color: var(--leise); }
-  footer { padding: 24px 0 40px; border-top: 1px solid rgba(17,19,17,.15); font-size: .82rem; color: var(--leise); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+  .posten { width: 100%; border-collapse: collapse; margin-top: clamp(16px, 2vw, 26px); font-variant-numeric: tabular-nums; }
+  .posten th { text-align: left; padding: 6px 10px 6px 0; border-bottom: 2px solid var(--druck); vertical-align: bottom; }
+  .posten td { padding: 7px 10px 6px 0; border-bottom: 1px solid var(--druck-leise); vertical-align: baseline; }
+  .posten td.nr { font-weight: 800; font-stretch: 100%; width: 3.2em; }
+  .posten td.hand { font-size: 1.3rem; }
+  .posten td.klein { font-size: 1.15rem; }
+  .posten .rechts { text-align: right; padding-right: 0; }
+  .summe td { border-bottom: 0; padding-top: 12px; }
+  .summe .gesamt { white-space: nowrap; font-weight: 700; font-size: 1.6rem; text-decoration: underline double; text-decoration-thickness: 1.5px; text-underline-offset: 6px; }
 
-  .zurueck { position: fixed; left: 16px; bottom: 16px; z-index: 9; background: #0B0B0C; color: #F4F1EA; text-decoration: none; font-size: .8rem; padding: 10px 16px; border-radius: 999px; display: none; }
+  .kopfzeile { grid-area: kopf; } .liste { grid-area: liste; }
+  .nur-gross { display: none; }
+  .tisch { align-self: start; padding: 30px clamp(20px, 2.4vw, 32px) 26px; box-shadow: 0 1px 0 rgba(0, 0, 0, .06), 0 14px 30px -18px rgba(60, 45, 0, .55); }
+  .klammer { position: absolute; top: 6px; left: 26px; width: 44px; height: 10px; }
+  .stapel { grid-area: tisch; position: relative; align-self: start; }
+  /* rosa Durchschrift liegt versetzt unter dem weißen Original */
+  .kopie { position: absolute; inset: 10px -8px auto 8px; height: calc(var(--tisch-h, 360px)); background: var(--rosa) var(--faser); transform: rotate(-1.6deg); }
+  .stapel .foto { width: 72%; margin: 26px 0 0 auto; transform: rotate(1.4deg); }
+  .stapel .foto img { aspect-ratio: 3 / 2; }
+  .tisch h2 { font-weight: 800; font-stretch: 75%; font-size: clamp(1.9rem, 1.4rem + 1.4vw, 2.6rem); line-height: 1; }
+  .tisch .zeiten { margin-top: 6px; color: var(--druck-leise); }
+  .felder { display: grid; grid-template-columns: 1.3fr 1fr .8fr; margin-top: 18px; border: 1.5px solid var(--druck); }
+  .felder label { display: grid; gap: 2px; padding: 8px 10px 4px; }
+  .felder label + label { border-left: 1.5px solid var(--druck); }
+  .felder select {
+    appearance: none; width: 100%; min-height: 40px; border: 0; border-radius: 0; padding: 0 22px 0 0; cursor: pointer;
+    background: transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2325348c' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 2px center;
+    font: 700 1.3rem var(--hand); color: var(--blau);
+  }
+  .felder select:hover { background-color: rgba(37, 52, 140, .06); }
+  .felder option { font-family: var(--form); }
+  .knopf {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 54px; padding: 0 26px; margin-top: 18px; border: 0; border-radius: 0;
+    background: var(--stempel); color: #fff; cursor: pointer; text-decoration: none;
+    font: 800 1.05rem var(--form); font-stretch: 100%; letter-spacing: .1em; text-transform: uppercase;
+    outline: 2px solid var(--stempel); outline-offset: 3px;
+    transition: background-color .2s var(--raus), outline-color .2s var(--raus), transform .2s var(--raus);
+  }
+  .knopf:hover { background: var(--stempel-dunkel); outline-color: var(--stempel-dunkel); }
+  .knopf:active { transform: scale(.97) rotate(-.6deg); }
+  .knopf:focus-visible { outline: 3px solid var(--blau); }
+  .tisch .knopf { width: 100%; }
+  .tisch p.klein { margin-top: 12px; font-size: .92rem; color: var(--druck-leise); }
 
-  @media (min-width: 820px) {
-    nav ul { display: flex; }
-    .kopf h1 { font-size: 8.4rem; }
-    .kopf-unten { grid-template-columns: 1fr auto; }
-    .collage { grid-template-columns: 2fr 1fr 1fr; }
-    .collage div { aspect-ratio: 4/4.6; }
-    .collage div:first-child { grid-row: auto; aspect-ratio: auto; }
-    .menue { grid-template-columns: 1fr 1.3fr; gap: 90px; }
-    .wein { grid-template-columns: 1fr 1fr; }
-    .wein .text { padding: 70px 64px; }
-    .fuss { grid-template-columns: 1.3fr 1fr; align-items: end; }
-    section { padding: 100px 0; }
+  /* Stempel „Angefragt“ nach dem Absenden */
+  .abdruck {
+    position: absolute; right: 18px; bottom: 74px; padding: 6px 12px; border: 3px double var(--stempel); color: var(--stempel);
+    font-weight: 800; font-stretch: 100%; letter-spacing: .12em; text-transform: uppercase; line-height: 1.15; text-align: center;
+    transform: rotate(-8deg) scale(1.5); opacity: 0; pointer-events: none; background: rgba(250, 247, 238, .6);
+    transition: transform .35s var(--raus), opacity .2s;
+  }
+  .abdruck small { display: block; font-family: var(--hand); text-transform: none; letter-spacing: 0; font-weight: 400; font-size: .95rem; }
+  .abdruck.da { transform: rotate(-8deg) scale(1); opacity: .9; }
+
+  /* Eingangsstempel auf dem Lieferschein */
+  .liste { position: relative; }
+  .eingang {
+    position: absolute; right: 24%; bottom: -34px; padding: 5px 12px; border: 3px double var(--stempel); color: var(--stempel);
+    font-weight: 800; font-stretch: 100%; letter-spacing: .12em; text-transform: uppercase; line-height: 1.15; text-align: center;
+    transform: rotate(-6deg); opacity: 1; pointer-events: none;
+  }
+  .eingang small { display: block; font-family: var(--hand); text-transform: none; letter-spacing: 0; font-weight: 400; font-size: .95rem; }
+  .schreibt .eingang { transform: rotate(-6deg) scale(1.6); opacity: 0; }
+  .schreibt.los .eingang { transform: rotate(-6deg) scale(1); opacity: 1; transition: transform .3s var(--raus) 1.7s, opacity .15s 1.7s; }
+
+  .foto { position: relative; margin: 22px 0 0; }
+  .foto img { aspect-ratio: 4 / 3; border: 6px solid #fff; box-shadow: 0 8px 18px -12px rgba(0, 0, 0, .5); }
+  .foto figcaption { margin-top: 6px; font-size: 1.05rem; }
+  .bueroklammer { position: absolute; top: -16px; right: 26px; width: 18px; height: 52px; z-index: 1; }
+
+  /* ---------- Küchen- und Service-Durchschrift ---------- */
+  .abschnitt { padding: clamp(56px, 7vw, 104px) var(--rand); }
+  .kueche, .wein { max-width: 1180px; margin: 0 auto; padding: clamp(30px, 4vw, 56px) clamp(20px, 4vw, 56px) clamp(26px, 3vw, 40px); background-color: #f6e690; }
+  .wein { background-color: var(--rosa); max-width: 860px; }
+  .imprint { margin-top: 28px; padding-top: 8px; border-top: 1px dashed var(--druck-leise); }
+  .kueche h2, .wein h2, .besuch h2 { font-weight: 800; font-stretch: 68%; font-size: clamp(2.3rem, 1.5rem + 3vw, 4.25rem); line-height: .95; text-wrap: balance; }
+  .sub { margin-top: 10px; max-width: 40em; }
+  .zettel td b { display: block; font-weight: 700; font-size: clamp(1.15rem, 1rem + .5vw, 1.45rem); line-height: 1.2; }
+  .zettel td span { display: block; font-size: .95rem; margin-top: 2px; }
+  .zettel td { padding-block: 12px 10px; }
+  .preiszeile { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-top: 14px; flex-wrap: wrap; }
+  .preiszeile .hand { font-size: 1.5rem; }
+  .bilder { display: grid; gap: 22px; margin-top: 34px; }
+
+  /* ---------- Besuch ---------- */
+  .besuch { max-width: 1180px; margin: 0 auto; border-top: 2px solid var(--druck); padding-top: 26px; display: grid; gap: 30px; }
+  .besuch dl { display: grid; gap: 16px 30px; }
+  .besuch dt { font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; font-stretch: 100%; color: var(--druck-leise); }
+  .besuch dd { font-size: 1.3rem; }
+  .unterschrift { display: flex; align-items: end; gap: 16px; flex-wrap: wrap; }
+  .unterschrift .linie { min-width: 220px; border-bottom: 1.5px solid var(--druck); padding: 0 6px 2px; font-size: 1.8rem; }
+
+  footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px; padding: 22px var(--rand) 40px; border-top: 1px solid var(--druck-leise); font-size: .9rem; color: var(--druck-leise); }
+
+  .zurueck { position: fixed; left: 16px; bottom: 16px; z-index: 9; background: var(--druck); color: var(--gelb); text-decoration: none; font-size: .85rem; font-weight: 600; padding: 10px 16px; display: none; align-items: center; gap: 8px; }
+
+  /* ---------- Einschreiben beim Laden: Druck, Hand, Stempel zuletzt ---------- */
+  .einschreiben { display: inline-block; }
+  .schreibt .einschreiben { clip-path: inset(0 100% 0 0); }
+  .schreibt.los .einschreiben { clip-path: inset(0 0 0 0); transition: clip-path .5s cubic-bezier(.5, 0, .3, 1) var(--v, 0s); }
+
+  @media (min-width: 900px) {
+    .kopf { grid-template-columns: auto 1fr auto; }
+    nav { grid-column: auto; justify-self: center; }
+    .lieferung { grid-template-columns: minmax(0, 1.65fr) minmax(320px, 1fr); grid-template-areas: "kopf tisch" "liste tisch"; gap: 0 clamp(22px, 3vw, 48px); align-items: start; }
+    .tisch { transform: rotate(.6deg); }
+    .stapel { margin-top: -38px; z-index: 2; }
+    .nur-gross { display: block; }
+    .bilder { grid-template-columns: 1.2fr 1fr; align-items: start; }
+    .bilder .raum { width: 62%; transform: rotate(-1deg); }
+    .besuch { grid-template-columns: 1.1fr 1fr; align-items: end; }
+    .besuch dl { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 899px) {
+    .beleg { gap: 12px; }
+    .beleg .lang { display: none; }
+    .posten thead { display: none; }
+    .posten tr { display: grid; grid-template-columns: 2em 1fr auto; column-gap: 10px; border-bottom: 1px solid var(--druck-leise); padding: 8px 0 6px; }
+    .posten td { border: 0; padding: 0; }
+    .posten td.nr { grid-row: span 2; width: auto; }
+    .posten td.weg { grid-column: 3; grid-row: 1; }
+    .posten td.uhr { grid-column: 3; grid-row: 2; }
+    .zettel td:last-child { grid-column: 2 / -1; margin-top: 4px; }
+    .posten .summe { border-bottom: 0; }
+    .posten .summe td:first-child { display: none; }
+    .posten .summe td { grid-row: 1; white-space: nowrap; }
+    .posten .summe { grid-template-columns: 1fr auto; }
+    .posten td.hand { font-size: 1.15rem; }
+    .posten td.klein { font-size: 1rem; }
+    .eingang { right: 4px; bottom: -58px; }
+    .liste { margin-bottom: 40px; }
+    .einleitung { font-size: .98rem; }
+  }
+  @media (max-width: 520px) {
+    .felder { grid-template-columns: 1fr 1fr; }
+    .felder label:first-child { grid-column: 1 / -1; }
+    .felder label:nth-child(2) { border-left: 0; }
+    .felder label + label { border-top: 1.5px solid var(--druck); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .schreibt .einschreiben { clip-path: none; }
+    .abdruck { transition: none; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <nav>
-    <div class="marke">SAISON</div>
-    <ul><li>Menü</li><li>Weine</li><li>Team</li><li>Gutscheine</li></ul>
-    <a class="btn" href="#tisch">Tisch buchen</a>
+
+<header class="kopf">
+  <div class="marke">SAISON<small>Küche &amp; Wein · Musterplatz 3 · Freiburg</small></div>
+  <nav aria-label="Hauptnavigation">
+    <ul>
+      <li><a href="#menue">Menü</a></li>
+      <li><a href="#wein">Weinbegleitung</a></li>
+      <li><a href="#besuch">Besuch</a></li>
+    </ul>
   </nav>
+  <div class="beleg"><span class="feld"><span class="lang">Lieferschein </span>Nr.</span><span class="hand" id="nummer">1028</span><span class="feld">Datum</span><span class="hand" id="datum">heute</span></div>
+</header>
 
-  <header class="kopf">
-    <h1>Was die Region<br>heute <em>hergibt</em>.</h1>
-    <div class="kopf-unten">
-      <p>Ein Menü, das sich mit den Jahreszeiten verändert. Gemüse vom Kaiserstuhl, Fisch aus dem Schwarzwald, Weine aus Baden.</p>
-      <a class="btn safran" href="#tisch">Tisch buchen →</a>
+<main>
+  <section class="lieferung" id="start" aria-labelledby="titel">
+    <div class="kopfzeile">
+      <h1 id="titel">Was die Region heute hergibt.</h1>
+      <p class="einleitung">Ein Menü, das sich mit den Jahreszeiten verändert. Jeden Morgen bringen uns Höfe, Fischer und Sammler aus der Gegend ihre Ware – das hier ist die Lieferung von heute.</p>
     </div>
-    <div class="collage">
-      <div><img src="bilder/bistro-fein-angerichteter-teller.webp" alt="Fein angerichteter Teller"></div>
-      <div><img src="bilder/bistro-gegrilltes-fleisch-auf-holzbrett.webp" alt="Gegrilltes Fleisch auf Holzbrett"></div>
-      <div><img src="bilder/bistro-heller-gastraum.webp" alt="Heller Gastraum"></div>
+    <div class="liste">
+      <table class="posten" aria-label="Heutige Lieferung und wofür sie gebraucht wird">
+        <thead>
+          <tr><th class="feld">Gang</th><th class="feld">Ware</th><th class="feld">Erzeuger</th><th class="feld weg rechts">Weg</th><th class="feld uhr rechts">Angeliefert</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="nr">1</td><td class="hand ware"><span class="einschreiben" style="--v:0.10s">Kürbis, Salbei</span></td><td class="hand klein erz"><span class="einschreiben" style="--v:0.16s">Gemüsehof, Ihringen</span></td><td class="hand klein weg rechts"><span class="einschreiben" style="--v:0.22s">22 km</span></td><td class="hand klein uhr rechts"><span class="einschreiben" style="--v:0.28s">6:40</span></td></tr>
+          <tr><td class="nr">2</td><td class="hand ware"><span class="einschreiben" style="--v:0.35s">Forelle</span></td><td class="hand klein erz"><span class="einschreiben" style="--v:0.41s">Fischzucht im Glottertal</span></td><td class="hand klein weg rechts"><span class="einschreiben" style="--v:0.47s">17 km</span></td><td class="hand klein uhr rechts"><span class="einschreiben" style="--v:0.53s">7:05</span></td></tr>
+          <tr><td class="nr">3</td><td class="hand ware"><span class="einschreiben" style="--v:0.60s">Steinpilze, Eier</span></td><td class="hand klein erz"><span class="einschreiben" style="--v:0.66s">Sammler aus St. Märgen</span></td><td class="hand klein weg rechts"><span class="einschreiben" style="--v:0.72s">26 km</span></td><td class="hand klein uhr rechts"><span class="einschreiben" style="--v:0.78s">7:30</span></td></tr>
+          <tr><td class="nr">4</td><td class="hand ware"><span class="einschreiben" style="--v:0.85s">Rehrücken</span></td><td class="hand klein erz"><span class="einschreiben" style="--v:0.91s">Jäger im Hochschwarzwald</span></td><td class="hand klein weg rechts"><span class="einschreiben" style="--v:0.97s">31 km</span></td><td class="hand klein uhr rechts"><span class="einschreiben" style="--v:1.03s">8:15</span></td></tr>
+          <tr><td class="nr">5</td><td class="hand ware"><span class="einschreiben" style="--v:1.10s">Zwetschgen</span></td><td class="hand klein erz"><span class="einschreiben" style="--v:1.16s">Obsthof, Ebringen</span></td><td class="hand klein weg rechts"><span class="einschreiben" style="--v:1.22s">9 km</span></td><td class="hand klein uhr rechts"><span class="einschreiben" style="--v:1.28s">8:40</span></td></tr>
+          <tr class="summe"><td></td><td colspan="2" class="feld" style="vertical-align:middle">Daraus: Herbstmenü, 5 Gänge</td><td colspan="2" class="hand rechts gesamt"><span class="einschreiben" style="--v:1.45s">79 €</span></td></tr>
+        </tbody>
+      </table>
+      <div class="eingang" aria-hidden="true">Angenommen<small>8:52 Uhr, Küche</small></div>
     </div>
-  </header>
-</div>
 
-<section>
-  <div class="wrap menue">
-    <div>
-      <span class="label">Herbstmenü</span>
-      <h2>Fünf Gänge,<br><em>eine</em> Jahreszeit.</h2>
+    <div class="stapel">
+    <div class="kopie" aria-hidden="true"></div>
+    <form class="blatt tisch" id="tisch" action="mailto:tisch@saison-freiburg.de" method="get" style="--loch: var(--rosa)">
+      <svg class="klammer" viewBox="0 0 44 10" aria-hidden="true"><path d="M3 7.5V3.5h38v4" fill="none" stroke="#7d8287" stroke-width="2.4" stroke-linejoin="round"/><path d="M5 4.2h34" stroke="#c9ccd0" stroke-width=".8"/></svg>
+      <h2>Tischbestellung</h2>
+      <p class="zeiten">Mi – Sa ab 18 Uhr · So 12 – 15 Uhr</p>
+      <div class="felder">
+        <label><span class="feld">Tag</span><select name="tag" id="tag"></select></label>
+        <label><span class="feld">Uhrzeit</span><select name="zeit" id="zeit"></select></label>
+        <label><span class="feld">Personen</span><select name="personen" id="personen"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label>
+      </div>
+      <button class="knopf" type="submit">Tisch bestellen</button>
+      <p class="klein" id="rueckmeldung" aria-live="polite">Wir bestätigen per E-Mail. (Beispielseite: Das Formular öffnet nur dein E-Mail-Programm.)</p>
+      <div class="abdruck" id="abdruck" aria-hidden="true">Angefragt<small id="abdruck-zeit"></small></div>
+    </form>
+    <figure class="foto nur-gross"><svg class="bueroklammer" viewBox="0 0 20 58" aria-hidden="true"><path d="M13 20v26a4.5 4.5 0 0 1-9 0V9a6.5 6.5 0 0 1 13 0v33a2.5 2.5 0 0 1-5 0V20" fill="none" stroke="#7d8287" stroke-width="2" stroke-linecap="round"/></svg><img src="bilder/bistro-fein-angerichteter-teller.webp" alt="Fein angerichteter Teller" fetchpriority="low"><figcaption class="hand">Angerichtet.</figcaption></figure>
     </div>
-    <div>
-      <ol class="gaenge">
-        <li><div><h3>Kürbis &amp; Brauner Butter</h3><p>geröstete Kerne, Salbei</p></div></li>
-        <li><div><h3>Forelle aus dem Glottertal</h3><p>Meerrettich, Apfel, Dill</p></div></li>
-        <li><div><h3>Pilze aus dem Wald</h3><p>Ei, Brioche, Thymian</p></div></li>
-        <li><div><h3>Rehrücken</h3><p>Sellerie, Preiselbeere, Jus</p></div></li>
-        <li><div><h3>Zwetschge &amp; Schokolade</h3><p>Zimt, Sauerrahm</p></div></li>
-      </ol>
-      <div class="menue-preis"><span class="label">Menü 5 Gänge</span><b>79 €</b></div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<div class="wrap">
-  <div class="wein">
-    <div class="text">
-      <span class="label" style="color:var(--safran)">Weinbegleitung</span>
-      <h2>Baden im Glas.</h2>
-      <p>Zu jedem Gang der passende Wein – ausgesucht von unserer Sommelière, direkt von Winzern aus der Region.</p>
-      <a class="btn safran" href="#">Weinkarte ansehen</a>
+  <section class="abschnitt" id="menue" aria-labelledby="menue-titel">
+    <div class="blatt kueche" style="--loch: var(--gelb)">
+      <h2 id="menue-titel">Herbstmenü. Fünf Gänge, eine Jahreszeit.</h2>
+      <p class="sub">Jeder Gang hängt an seiner Lieferung. Bleibt eine aus, ändert sich der Gang – so ist das bei uns.</p>
+      <table class="posten zettel" aria-label="Die fünf Gänge und woraus sie gekocht werden">
+        <thead><tr><th class="feld">Gang</th><th class="feld">Gericht</th><th class="feld">Aus der Lieferung</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">1</td><td><b>Kürbis &amp; braune Butter</b><span>Geröstete Kerne, Salbei</span></td><td class="hand klein">Kürbis, Salbei – Gemüsehof, Ihringen</td></tr>
+          <tr><td class="nr">2</td><td><b>Forelle aus dem Glottertal</b><span>Meerrettich, Apfel, Dill</span></td><td class="hand klein">Forelle – Fischzucht im Glottertal</td></tr>
+          <tr><td class="nr">3</td><td><b>Pilze aus dem Wald</b><span>Ei, Brioche, Thymian</span></td><td class="hand klein">Steinpilze, Eier – Sammler aus St. Märgen</td></tr>
+          <tr><td class="nr">4</td><td><b>Rehrücken</b><span>Sellerie, Preiselbeere, Jus</span></td><td class="hand klein">Rehrücken – Jäger im Hochschwarzwald</td></tr>
+          <tr><td class="nr">5</td><td><b>Zwetschge &amp; Schokolade</b><span>Zimt, Sauerrahm</span></td><td class="hand klein">Zwetschgen – Obsthof, Ebringen</td></tr>
+        </tbody>
+      </table>
+      <div class="preiszeile"><span class="feld">Menü 5 Gänge, pro Person</span><span class="hand">79 €</span></div>
+      <div class="bilder">
+        <figure class="foto raum"><svg class="bueroklammer" viewBox="0 0 20 58" aria-hidden="true"><path d="M13 20v26a4.5 4.5 0 0 1-9 0V9a6.5 6.5 0 0 1 13 0v33a2.5 2.5 0 0 1-5 0V20" fill="none" stroke="#7d8287" stroke-width="2" stroke-linecap="round"/></svg><img src="bilder/bistro-heller-gastraum.webp" alt="Heller Gastraum des Restaurants" loading="lazy"><figcaption class="hand">Unser Gastraum, 28 Plätze.</figcaption></figure>
+      </div>
+      <p class="imprint feld">Durchschrift · Küche</p>
     </div>
-    <div class="bild"><img src="bilder/bistro-abendstimmung-im-restaurant.webp" alt="Abendstimmung im Restaurant" loading="lazy"></div>
-  </div>
-</div>
+  </section>
 
-<div class="wrap" id="tisch">
-  <div class="fuss">
-    <h2>Bis bald<br>bei uns.</h2>
-    <div class="spalten">
-      <div><b>Öffnungszeiten</b><span>Mi – Sa ab 18 Uhr<br>So 12 – 15 Uhr</span></div>
-      <div><b>Adresse</b><span>Musterplatz 3<br>79100 Freiburg</span></div>
+  <section class="abschnitt" id="wein" aria-labelledby="wein-titel" style="padding-top:0">
+    <div class="blatt wein" style="--loch: var(--gelb)">
+      <h2 id="wein-titel">Baden im Glas.</h2>
+      <p class="sub">Zu jedem Gang der passende Wein – ausgesucht von unserer Sommelière, direkt von Winzern aus der Region.</p>
+      <table class="posten" aria-label="Weinbegleitung zu den fünf Gängen">
+        <thead><tr><th class="feld">Gang</th><th class="feld">Wein</th><th class="feld">Herkunft</th></tr></thead>
+        <tbody>
+          <tr><td class="nr">1</td><td class="hand">Gutedel</td><td class="hand klein">Markgräflerland</td></tr>
+          <tr><td class="nr">2</td><td class="hand">Grauburgunder</td><td class="hand klein">Kaiserstuhl</td></tr>
+          <tr><td class="nr">3</td><td class="hand">Weißburgunder</td><td class="hand klein">Tuniberg</td></tr>
+          <tr><td class="nr">4</td><td class="hand">Spätburgunder</td><td class="hand klein">Kaiserstuhl</td></tr>
+          <tr><td class="nr">5</td><td class="hand">Muskateller</td><td class="hand klein">Breisgau</td></tr>
+        </tbody>
+      </table>
+      <div class="preiszeile"><span class="feld">Weinbegleitung, 5 Gläser</span><span class="hand">45 €</span></div>
+      <p class="imprint feld">Durchschrift · Service</p>
     </div>
-  </div>
-  <footer><span>© Saison – Küche &amp; Wein</span><span>Beispiel-Design von JELK Digital</span></footer>
-</div>
+  </section>
 
-<a class="zurueck" href="../index.html#beispiele">← Zurück zu JELK Digital</a>
-<script>if (window.self === window.top && !location.search.includes("vorschau")) document.querySelector(".zurueck").style.display = "block";</script>
+  <section class="abschnitt" id="besuch" aria-labelledby="besuch-titel" style="padding-top:0">
+    <div class="besuch">
+      <div>
+        <h2 id="besuch-titel">Bis bald bei uns.</h2>
+        <dl style="margin-top:22px">
+          <div><dt>Öffnungszeiten</dt><dd class="hand">Mi – Sa ab 18 Uhr<br>So 12 – 15 Uhr</dd></div>
+          <div><dt>Adresse</dt><dd class="hand">Musterplatz 3<br>79100 Freiburg</dd></div>
+        </dl>
+      </div>
+      <div class="unterschrift">
+        <span class="feld">Empfangen</span><span class="linie hand">Euer Saison-Team</span>
+        <a class="knopf" href="#tisch">Tisch bestellen</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>© Saison – Küche &amp; Wein</span>
+  <span>Beispiel-Design von JELK Digital – das Restaurant und die Erzeuger sind erfunden</span>
+</footer>
+
+<a class="zurueck" href="../index.html#beispiele"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M13 7H2M6 2.5 1.5 7 6 11.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Zurück zu JELK Digital</a>
+
+<script>
+  if (window.self === window.top && !location.search.includes("vorschau")) document.querySelector(".zurueck").style.display = "inline-flex";
+
+  const ruhig = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- Heutiges Datum (Europe/Berlin) ---------- */
+  const berlin = () => {
+    const t = Object.fromEntries(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Berlin", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false })
+      .formatToParts(new Date()).map((p) => [p.type, p.value]));
+    const datum = new Date(Date.UTC(+t.year, +t.month - 1, +t.day));
+    return { datum, tag: datum.getUTCDay(), min: (+t.hour % 24) * 60 + +t.minute };
+  };
+  const { datum: heute, tag: heuteTag, min: jetztMin } = berlin();
+  document.getElementById("datum").textContent = `${heute.getUTCDate()}.${heute.getUTCMonth() + 1}.${heute.getUTCFullYear()}`;
+  // Fortlaufende Belegnummer: ein Lieferschein pro Tag
+  document.getElementById("nummer").textContent = 1000 + Math.floor(heute / 864e5) % 9000;
+
+  /* ---------- Einschreiben: Zeile für Zeile, Stempel zuletzt ---------- */
+  const lieferung = document.querySelector(".lieferung");
+  // Sichtbar ist der Normalzustand; die Animation startet nur, wenn sie auch abläuft
+  if (!ruhig && document.visibilityState === "visible") {
+    lieferung.classList.add("schreibt"); void lieferung.offsetWidth; lieferung.classList.add("los");
+  }
+
+  /* ---------- Rosa Kopie so hoch wie das Original ---------- */
+  const tischForm = document.getElementById("tisch");
+  new ResizeObserver(() => tischForm.parentElement.style.setProperty("--tisch-h", tischForm.offsetHeight + "px")).observe(tischForm);
+
+  /* ---------- Tischbestellung ---------- */
+  // Wochentag 0 = Sonntag; [erste, letzte Reservierungszeit] in Minuten
+  const OFFEN = { 0: [720, 810], 3: [1080, 1260], 4: [1080, 1260], 5: [1080, 1260], 6: [1080, 1260] };
+  const KURZ = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+  const uhr = (m) => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
+  const tagFeld = document.getElementById("tag"), zeitFeld = document.getElementById("zeit");
+  for (let d = 0, n = 0; d < 28 && n < 12; d++) {
+    const w = (heuteTag + d) % 7, z = OFFEN[w];
+    if (!z || (d === 0 && jetztMin > z[1] - 30)) continue;
+    const t = new Date(heute.getTime() + d * 864e5);
+    const name = d === 0 ? "Heute" : d === 1 ? "Morgen" : `${KURZ[w]}, ${t.getUTCDate()}.${t.getUTCMonth() + 1}.`;
+    tagFeld.add(new Option(name, t.toISOString().slice(0, 10))); n++;
+  }
+  const zeitenFuellen = () => {
+    const iso = tagFeld.value, z = OFFEN[new Date(iso + "T12:00:00Z").getUTCDay()];
+    const alt = zeitFeld.value; zeitFeld.innerHTML = "";
+    const ab = iso === heute.toISOString().slice(0, 10) ? Math.max(z[0], Math.ceil((jetztMin + 30) / 30) * 30) : z[0];
+    for (let m = ab; m <= z[1]; m += 30) zeitFeld.add(new Option(uhr(m), uhr(m)));
+    zeitFeld.value = [...zeitFeld.options].some((o) => o.value === alt) ? alt : (zeitFeld.options[Math.min(1, zeitFeld.options.length - 1)] || {}).value;
+  };
+  tagFeld.addEventListener("change", zeitenFuellen); zeitenFuellen();
+
+  document.getElementById("tisch").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const tag = tagFeld.options[tagFeld.selectedIndex].text, zeit = zeitFeld.value, personen = document.getElementById("personen").value;
+    const text = `Hallo Saison-Team,\n\nich möchte einen Tisch bestellen:\nTag: ${tag} (${tagFeld.value})\nUhrzeit: ${zeit} Uhr\nPersonen: ${personen}\n\nViele Grüße`;
+    document.getElementById("abdruck-zeit").textContent = `${tag}, ${zeit} · ${personen} P.`;
+    document.getElementById("abdruck").classList.add("da");
+    document.getElementById("rueckmeldung").textContent = `Deine E-Mail für ${tag}, ${zeit} Uhr, ${personen} ${personen === "1" ? "Person" : "Personen"} öffnet sich.`;
+    location.href = `mailto:tisch@saison-freiburg.de?subject=${encodeURIComponent(`Tischbestellung für ${personen} – ${tag}, ${zeit} Uhr`)}&body=${encodeURIComponent(text)}`;
+  });
+</script>
 </body>
 </html>
