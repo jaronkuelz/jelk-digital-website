@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /alt/
+
+Sitemap: https://jelkdigital.de/sitemap.xml
